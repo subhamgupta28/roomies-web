@@ -7,7 +7,9 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Paper from '@material-ui/core/Paper';
 import Draggable from 'react-draggable';
-import {TextField} from "@material-ui/core";
+import {Chip, TextField} from "@material-ui/core";
+import {makeStyles} from "@material-ui/core/styles";
+import {Skeleton} from "@material-ui/lab";
 
 
 function PaperComponent(props) {
@@ -17,12 +19,18 @@ function PaperComponent(props) {
         </Draggable>
     );
 }
+const chipStyle = makeStyles((theme) => ({
+    item: {
+        margin: 6,
+        flexWrap: 'wrap',
+    },
+}));
 
-export default function SelectRoom(rooms) {
+export default function SelectRoom({rooms, currentRoom, setCurrentRoom}) {
     const [open, setOpen] = React.useState(false)
-
+    const classes = chipStyle();
     useEffect(() => {
-        if (rooms.length>1)
+        if (rooms.length > 1)
             setOpen(true)
     }, [rooms])
     const handleClose = () => {
@@ -38,18 +46,24 @@ export default function SelectRoom(rooms) {
                 aria-labelledby="draggable-dialog-title"
             >
                 <DialogTitle style={{cursor: 'move'}} id="draggable-dialog-title">
-                    Add Item
+                    Select Room
                 </DialogTitle>
                 <DialogContent>
+                    <div className={classes.item}>
+                    {rooms ? rooms.map((room) =>
+                        <Chip
+                            clickable
+                            onClick={() => {
+                                setCurrentRoom(room)
+                                setOpen(false)
+                            }}
+                            color={"primary"}
+                            label={room.room_name}
+                        />) : (
+                        <Skeleton variant="rectangular" animation="wave"/>
+                    )}
+                    </div>
                 </DialogContent>
-                <DialogActions>
-                    <Button autoFocus onClick={handleClose} color="primary">
-                        Cancel
-                    </Button>
-                    <Button color="primary">
-                        Select
-                    </Button>
-                </DialogActions>
             </Dialog>
         </div>
     );

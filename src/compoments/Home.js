@@ -62,7 +62,7 @@ export default function Home() {
     }, [rooms])
     return (
         <Paper className={classes.paper}>
-            <SelectRoom rooms={rooms}/>
+            <SelectRoom rooms={rooms} currentRoom={currentRoom} setCurrentRoom={setCurrentRoom}/>
             <PrimaryAppBar room={currentRoom} user={user}/>
             {rooms && <Summary room={currentRoom} user={user}/>}
             {rooms && <BottomMenu room={currentRoom} user={user}/>}

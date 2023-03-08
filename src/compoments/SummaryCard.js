@@ -42,7 +42,7 @@ export default function SummaryCard({detail}) {
                     {bought_by}
                 </Typography>
                 <Typography variant="h5" component="h2" color={"secondary"}>
-                    {amount_paid}
+                    ₹{amount_paid}
                 </Typography>
                 <Typography className={classes.pos} color="textSecondary">
                     {item_bought}
