@@ -1,4 +1,4 @@
-import {hot} from "react-hot-loader/root"
+
 import theme from "./theme";
 import Home from "./compoments/Home";
 import React from "react";
@@ -26,4 +26,4 @@ function App() {
     );
 }
 
-export default hot(App);
+export default App;
