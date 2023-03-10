@@ -14,7 +14,7 @@ function App() {
     return (
         <ThemeProvider theme={theme}>
             <AuthProvider>
-                <BrowserRouter>
+                <BrowserRouter basename={process.env.PUBLIC_URL}>
                     <Paper>
                         <PrivateRoute exact path="/" component={Home}/>
                         <Route exact path="/login" component={Login}/>
