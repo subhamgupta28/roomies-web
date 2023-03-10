@@ -1,13 +1,13 @@
 {
-  "main.css": "/roomies-web/static/css/main.ad1aa6dd.chunk.css",
-  "main.js": "/roomies-web/static/js/main.7fa04fca.chunk.js",
-  "main.js.map": "/roomies-web/static/js/main.7fa04fca.chunk.js.map",
-  "static/js/1.fef5ca0d.chunk.js": "/roomies-web/static/js/1.fef5ca0d.chunk.js",
-  "static/js/1.fef5ca0d.chunk.js.map": "/roomies-web/static/js/1.fef5ca0d.chunk.js.map",
+  "main.css": "/roomies-web/static/css/main.85839b6f.chunk.css",
+  "main.js": "/roomies-web/static/js/main.8953da13.chunk.js",
+  "main.js.map": "/roomies-web/static/js/main.8953da13.chunk.js.map",
+  "static/js/1.247a6c39.chunk.js": "/roomies-web/static/js/1.247a6c39.chunk.js",
+  "static/js/1.247a6c39.chunk.js.map": "/roomies-web/static/js/1.247a6c39.chunk.js.map",
   "runtime~main.js": "/roomies-web/static/js/runtime~main.ccb638aa.js",
   "runtime~main.js.map": "/roomies-web/static/js/runtime~main.ccb638aa.js.map",
-  "static/css/main.ad1aa6dd.chunk.css.map": "/roomies-web/static/css/main.ad1aa6dd.chunk.css.map",
+  "static/css/main.85839b6f.chunk.css.map": "/roomies-web/static/css/main.85839b6f.chunk.css.map",
   "index.html": "/roomies-web/index.html",
-  "precache-manifest.0c64df8f4de289f038d051223ce0b48a.js": "/roomies-web/precache-manifest.0c64df8f4de289f038d051223ce0b48a.js",
+  "precache-manifest.353e16ef20eca4e021345a1ebd0b85ea.js": "/roomies-web/precache-manifest.353e16ef20eca4e021345a1ebd0b85ea.js",
   "service-worker.js": "/roomies-web/service-worker.js"
 }
