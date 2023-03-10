@@ -1,13 +1,13 @@
 {
-  "main.css": "/static/css/main.85839b6f.chunk.css",
-  "main.js": "/static/js/main.8953da13.chunk.js",
-  "main.js.map": "/static/js/main.8953da13.chunk.js.map",
-  "static/js/1.247a6c39.chunk.js": "/static/js/1.247a6c39.chunk.js",
-  "static/js/1.247a6c39.chunk.js.map": "/static/js/1.247a6c39.chunk.js.map",
-  "runtime~main.js": "/static/js/runtime~main.229c360f.js",
-  "runtime~main.js.map": "/static/js/runtime~main.229c360f.js.map",
-  "static/css/main.85839b6f.chunk.css.map": "/static/css/main.85839b6f.chunk.css.map",
-  "index.html": "/index.html",
-  "precache-manifest.861f0984d86a3d3aa0d714c6ebe8710b.js": "/precache-manifest.861f0984d86a3d3aa0d714c6ebe8710b.js",
-  "service-worker.js": "/service-worker.js"
+  "main.css": "https://subhamgupta28.github.io/roomies-web/static/css/main.85839b6f.chunk.css",
+  "main.js": "https://subhamgupta28.github.io/roomies-web/static/js/main.0ac871a1.chunk.js",
+  "main.js.map": "https://subhamgupta28.github.io/roomies-web/static/js/main.0ac871a1.chunk.js.map",
+  "static/js/1.247a6c39.chunk.js": "https://subhamgupta28.github.io/roomies-web/static/js/1.247a6c39.chunk.js",
+  "static/js/1.247a6c39.chunk.js.map": "https://subhamgupta28.github.io/roomies-web/static/js/1.247a6c39.chunk.js.map",
+  "runtime~main.js": "https://subhamgupta28.github.io/roomies-web/static/js/runtime~main.933202ea.js",
+  "runtime~main.js.map": "https://subhamgupta28.github.io/roomies-web/static/js/runtime~main.933202ea.js.map",
+  "static/css/main.85839b6f.chunk.css.map": "https://subhamgupta28.github.io/roomies-web/static/css/main.85839b6f.chunk.css.map",
+  "index.html": "https://subhamgupta28.github.io/roomies-web/index.html",
+  "precache-manifest.ca6e4aa3367a7139d7f4c5e2fcc3ae47.js": "https://subhamgupta28.github.io/roomies-web/precache-manifest.ca6e4aa3367a7139d7f4c5e2fcc3ae47.js",
+  "service-worker.js": "https://subhamgupta28.github.io/roomies-web/service-worker.js"
 }
