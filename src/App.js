@@ -1,7 +1,7 @@
 
 import theme from "./theme";
 import Home from "./compoments/Home";
-import React from "react";
+import React, { useState } from "react";
 import Login from "./compoments/Login";
 import {AuthProvider} from "./compoments/AuthProvider";
 import SignUp from "./compoments/SignUp";
@@ -11,6 +11,9 @@ import {Paper, ThemeProvider} from "@material-ui/core";
 
 
 function App() {
+
+   const [up, isUp] = useState("");
+
     return (
         <ThemeProvider theme={theme}>
             <AuthProvider>
