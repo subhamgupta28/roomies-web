@@ -1,9 +1,8 @@
 *{
   margin: 0;
   padding: 0;
-  height: auto;
-  width: auto;
 }
+
 .App {
   text-align: center;
 }
@@ -13,10 +12,7 @@
   pointer-events: none;
 }
 
-
-
 .App-header {
-
   min-height: 100vh;
   display: flex;
   flex-direction: column;
