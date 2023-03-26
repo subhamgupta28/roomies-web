@@ -27,39 +27,38 @@ const useStyles = makeStyles((theme) => ({
         },
     },
 }));
-export default function AddItem({room, user, open, setOpen}) {
+export default function RoomCreation({room, user}) {
     const classes = useStyles();
-
-    const [amount, setAmount] = React.useState(null)
-    const [itemName, setItemName] = React.useState(null)
-    const [notes, setNotes] = React.useState(null)
+    const [open, setOpen] = React.useState(false)
+    const [roomName, setRoomName] = React.useState(null)
+    const [limit, setLimit] = React.useState(null)
+    const [roomId, setRoomId] = React.useState(null)
 
     const handleClose = () => {
         setOpen(false);
     };
     const saveDetail = async (item) => {
         const {data, error} = await supabase
-            .from('details')
+            .from('rooms')
             .insert([
                 item
             ])
-        console.log("saved",user)
+        console.log("saved", user)
     }
 
-    const handleSave = () => {
-        if (amount && itemName) {
+    const handleCreateNewRoom = () => {
+        if (roomName && limit) {
             const date = new Date()
-            const dateStr = date.getFullYear()+"-"+date.getMonth()+"-"+date.getDay()
+            const dateStr = date.getFullYear() + "-" + date.getMonth() + "-" + date.getDay()
             const data = {
-                pk_detail_id: date.getTime(),
-                bought_by: user.name,
-                amount_paid: amount,
-                date: dateStr,
-                deleted: false,
-                item_bought: itemName,
-                timestamp: date.getTime(),
-                fk_room_id: room.pk_room_id,
-                fk_uuid: user.pk_uuid
+                pk_room_id: date.getTime(),
+                create_date: dateStr,
+                room_name: roomName,
+                room_limit: limit,
+                time: date.toDateString(),
+                person_joined: 1,
+                start_day_of_month: dateStr,
+                fk_user_id: user.pk_uuid
             }
             console.log(data)
             saveDetail(data).then(() => {
@@ -67,9 +66,33 @@ export default function AddItem({room, user, open, setOpen}) {
             })
         }
     }
+    const handleJoinRoom = () => {
+        if (roomId){
+            const date = new Date()
+            const dateStr = date.getFullYear() + "-" + date.getMonth() + "-" + date.getDay()
+            const data = {
+                pk_room_id: roomId,
+                create_date: dateStr,
+                room_name: "",
+                room_limit: limit,
+                time: date.toDateString(),
+                person_joined: 1,
+                start_day_of_month: dateStr,
+                fk_user_id: user.pk_uuid
+            }
+            console.log(data)
+            saveDetail(data).then(() => {
+
+            })
+        }
+
+    }
 
     return (
         <div>
+            <Button color="primary" onClick={()=>setOpen(true)}>
+                Add Room
+            </Button>
             <Dialog
                 open={open}
                 onClose={handleClose}
@@ -77,41 +100,42 @@ export default function AddItem({room, user, open, setOpen}) {
                 aria-labelledby="draggable-dialog-title"
             >
                 <DialogTitle style={{cursor: 'move'}} id="draggable-dialog-title">
-                    Add Item
+                    Join or Create new room
                 </DialogTitle>
                 <DialogContent>
+                    Create new Room
                     <form className={classes.root}>
                         <TextField
                             required
-                            onChange={(d)=>setItemName(d.target.value)}
+                            onChange={(d) => setRoomName(d.target.value)}
                             id="outlined-required"
-                            label="Item Name"
+                            label="Choose Room Name"
                             variant="outlined"
                         />
                         <TextField
                             required
-                            onChange={(d)=>setAmount(d.target.value)}
+                            onChange={(d) => setLimit(d.target.value)}
                             id="outlined-disabled"
-                            label="Amount Paid"
+                            label="Limit Person"
                             variant="outlined"
                         />
+                        <Button color="primary" onClick={handleCreateNewRoom}>
+                            Create
+                        </Button>
+                    </form>
+                    Join existing room
+                    <form className={classes.root}>
                         <TextField
-                            onChange={(d)=>setNotes(d.target.value)}
+                            onChange={(d) => setRoomId(d.target.value)}
                             id="outlined-password-input"
-                            label="Note"
+                            label="Enter Room Id"
                             variant="outlined"
                         />
-
+                        <Button autoFocus onClick={handleJoinRoom} color="primary">
+                            Enter
+                        </Button>
                     </form>
                 </DialogContent>
-                <DialogActions>
-                    <Button autoFocus onClick={handleClose} color="primary">
-                        Cancel
-                    </Button>
-                    <Button color="primary" onClick={handleSave}>
-                        Save
-                    </Button>
-                </DialogActions>
             </Dialog>
         </div>
     );

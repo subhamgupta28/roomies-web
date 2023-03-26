@@ -2,6 +2,7 @@ import {Button, makeStyles, Typography} from "@material-ui/core";
 import React, {useEffect, useState} from "react";
 import supabase from "../supabase";
 import AddItem from "./AddItem";
+import RoomCreation from "./RoomCreation";
 
 const style = makeStyles((theme) => ({
     root: {
@@ -40,6 +41,7 @@ export default function BottomMenu({room, user}){
             <Typography variant="body2">
                 Total Spending {total}
             </Typography>
+            <RoomCreation room={room} user={user}/>
         </div>
     )
 

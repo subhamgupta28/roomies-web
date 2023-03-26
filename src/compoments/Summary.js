@@ -1,6 +1,5 @@
 import {makeStyles} from "@material-ui/core/styles";
 import React, {useEffect, useState} from "react";
-import {Button, Chip, Paper, Typography} from "@material-ui/core";
 import supabase from "../supabase";
 import {Skeleton} from "@material-ui/lab";
 import SummaryCard from "./SummaryCard";
@@ -23,16 +22,12 @@ const chipStyle = makeStyles((theme) => ({
         flexWrap: 'wrap',
     },
     button: {
-
         marginBottom: 10,
-
-
     },
     text: {
         marginTop: 10,
         position: "relative",
         left: '-33%'
-
     },
     search: {
         margin: 8,
@@ -46,7 +41,6 @@ const chipStyle = makeStyles((theme) => ({
         '& > *': {
             margin: theme.spacing(1.0),
         },
-
     },
     auto: {
         width: 250
@@ -72,11 +66,17 @@ export default function Summary({user, room}) {
     useEffect(() => {
         const fetchData = async () => {
             if (room) {
+                const todayDate = new Date()
+                todayDate.setMinutes(0)
+                todayDate.setHours(0)
+                todayDate.setSeconds(0)
                 let {data: details, error} = await supabase
                     .from('details')
                     .select("*")
                     .eq('fk_room_id', room.pk_room_id)
                     .eq('deleted', false)
+                    // .gt('timestamp', todayDate.getTime())
+                details = details.sort((a,b)=>b.timestamp-a.timestamp)
                 setDetailsList(details)
             }
         }
