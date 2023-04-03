@@ -37,6 +37,7 @@ export default function Home() {
         const userRef = ref(db, 'ROOMIES/' + uuid);
         onValue(userRef, (snapshot) => {
             const data = snapshot.val();
+            console.log("user", data);
             setUser(perv => data)
             fetchRoom(data)
         });

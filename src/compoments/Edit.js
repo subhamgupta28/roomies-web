@@ -23,20 +23,30 @@ const useStyles = makeStyles((theme) => ({
         },
     },
 }));
-function Edit({room, user, open, setOpen}) {
+function Edit({ detail, open, setOpen }) {
     const classes = useStyles();
-    const [amount, setAmount] = React.useState(null)
-    const [itemName, setItemName] = React.useState(null)
-    const [notes, setNotes] = React.useState(null)
+    const {
+        BOUGHT_BY,
+        AMOUNT_PAID,
+        DATE,
+        TIME,
+        ITEM_BOUGHT,
+        TIME_STAMP,
+        UUID,
+        NOTE
+    } = detail
+    const [amount, setAmount] = React.useState(AMOUNT_PAID)
+    const [itemName, setItemName] = React.useState(ITEM_BOUGHT)
+    const [notes, setNotes] = React.useState(NOTE)
     const handleClose = () => {
         setOpen(false);
     };
     const saveDetail = async (item) => {
 
-        console.log("saved",user)
+        console.log("saved")
     }
     const handleSave = () => {
-        
+
     }
     return (
         <div>
@@ -53,6 +63,7 @@ function Edit({room, user, open, setOpen}) {
                     <form className={classes.root}>
                         <TextField
                             required
+                            value={itemName}
                             onChange={(d) => setItemName(d.target.value)}
                             id="outlined-required"
                             label="Item Name"
@@ -60,12 +71,14 @@ function Edit({room, user, open, setOpen}) {
                         />
                         <TextField
                             required
+                            value={amount}
                             onChange={(d) => setAmount(d.target.value)}
                             id="outlined-disabled"
                             label="Amount Paid"
                             variant="outlined"
                         />
                         <TextField
+                            value={notes}
                             onChange={(d) => setNotes(d.target.value)}
                             id="outlined-password-input"
                             label="Note"

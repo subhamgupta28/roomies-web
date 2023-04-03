@@ -22,35 +22,6 @@ const chipStyle = makeStyles((theme) => ({
         margin: 6,
         flexWrap: 'wrap',
     },
-    button: {
-        marginBottom: 10,
-    },
-    text: {
-        marginTop: 10,
-        position: "relative",
-        left: '-33%'
-    },
-    search: {
-        margin: 8,
-        borderRadius: 12,
-        display: "flex",
-        alignItems: "center",
-        position: "relative",
-        left: 20,
-        justifyContent: 'center',
-        flexWrap: 'wrap',
-        '& > *': {
-            margin: theme.spacing(1.0),
-        },
-    },
-    auto: {
-        width: 250
-    },
-    f: {
-        justifyContent: "center",
-        alignItems: "center",
-    }
-
 
 }));
 
@@ -67,8 +38,8 @@ export default function Summary({user, room}) {
                 todayDate.setMinutes(0)
                 todayDate.setHours(0)
                 todayDate.setSeconds(0)
-                const querySnapshot = query(collection(db, room.ROOM_ID),  where("TIME_STAMP", "<=", todayDate.getTime()));
-                const unsubscribe = onSnapshot(querySnapshot, (querySnapshot) => {
+                const querySnapshot = query(collection(db, room.ROOM_ID));
+                onSnapshot(querySnapshot, (querySnapshot) => {
                     const data = [];
                     querySnapshot.forEach((doc) => {
                         data.push(doc.data());
@@ -76,8 +47,6 @@ export default function Summary({user, room}) {
                     setDetails(data)
                     console.log(data)
                 });
-
-
             }
         }
         fetchData().then(() => {

@@ -7,8 +7,9 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import Paper from '@material-ui/core/Paper';
 import Draggable from 'react-draggable';
 import {makeStyles, TextField} from "@material-ui/core";
-
-
+import { doc, setDoc } from "firebase/firestore"; 
+import {db} from "../FirebaseWork";
+import { getAuth } from "firebase/auth";
 
 function PaperComponent(props) {
     return (
@@ -40,22 +41,29 @@ export default function AddItem({room, user, open, setOpen}) {
 
         console.log("saved",user)
     }
+    const auth = getAuth();
+    const uuid = auth.currentUser.uid
 
-    const handleSave = () => {
+    const handleSave = async() => {
         if (amount && itemName) {
             const date = new Date()
             const dateStr = date.getFullYear()+"-"+date.getMonth()+"-"+date.getDay()
+
+            
             const data = {
-                pk_detail_id: date.getTime(),
-                bought_by: user.name,
-                amount_paid: amount,
-                date: dateStr,
-                deleted: false,
-                item_bought: itemName,
-                timestamp: date.getTime(),
-                fk_room_id: room.pk_room_id,
-                fk_uuid: user.pk_uuid
+                CATEGORY: "All",
+                BOUGHT_BY: user.USER_NAME,
+                AMOUNT_PAID: amount,
+                DATE: dateStr,
+                DELETED: false,
+                ITEM_BOUGHT: itemName,
+                TIME_STAMP: date.getTime(),
+                NOTE: notes,
+                UUID: uuid,
+                TAGS: [],
+                TIME: ""
             }
+            await setDoc(doc(db, room.ROOM_ID, date.getTime().toString()), data);
             console.log(data)
             saveDetail(data).then(() => {
 
