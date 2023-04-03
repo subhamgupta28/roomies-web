@@ -1,11 +1,13 @@
-import supabase from "../supabase";
 import React from "react";
-import {makeStyles, Paper} from "@material-ui/core";
+import { makeStyles, Paper } from "@material-ui/core";
 import PrimaryAppBar from "./AppBar";
 import Summary from "./Summary";
 import SelectRoom from "./SelectRoom";
 import BottomMenu from "./BottomMenu";
 import RoomCreation from "./RoomCreation";
+import DiffUser from "./DiffUser";
+import { getDatabase, ref, onValue, get } from "firebase/database";
+import { getAuth } from "firebase/auth";
 
 
 const paperStyle = makeStyles((theme) => ({
@@ -21,54 +23,69 @@ export default function Home() {
     const [rooms, setRooms] = React.useState([])
     const [currentRoom, setCurrentRoom] = React.useState(null)
     const [userId, setUserId] = React.useState(null)
-    const [roomId, setRoomId] = React.useState(null)
+    const [roomList, setRoomList] = React.useState([])
+    const [roomIdVsRef, setRoomIdVsRef] = React.useState([])
+    const [roomNameVsRef, setRoomNameVsRef] = React.useState([])
+    const [currentRef, setCurrentRef] = React.useState("ROOM_ID1")
+    const [roomMates, setRoomMates] = React.useState([]);
 
-    async function fetchUser(uuid) {
-        let {data: users, error} = await supabase
-            .from('users')
-            .select('*')
-            .eq("pk_uuid", uuid)
-        if (users) {
-            console.log("user", users[0])
-            setUserId(users[0].pk_uuid)
-            setUser(prev => prev = users[0])
+    const auth = getAuth();
+    const uuid = auth.currentUser.uid
+    const db = getDatabase();
+
+    async function fetchUser() {
+        const userRef = ref(db, 'ROOMIES/' + uuid);
+        onValue(userRef, (snapshot) => {
+            const data = snapshot.val();
+            setUser(perv => data)
+            fetchRoom(data)
+        });
+    }
+
+    async function fetchRoom(user) {
+        let list = {};
+        let roomIdRef = {};
+        let roomNameRef = {};
+        for (const key in user) {
+            if (key.includes("ROOM_ID")) {
+                roomIdRef = { ...roomIdRef, [key]: user[key] }
+                await get(ref(db, "ROOMIES/ROOM/" + user[key])).then((snapshot) => {
+                    const room = snapshot.val()
+                    list = { ...list, [user[key]]: room }
+                    roomNameRef = { ...roomNameRef, [room.ROOM_NAME]: key }
+                })
+            }
         }
+        setRoomIdVsRef(roomIdRef)
+        setRoomNameVsRef(roomNameRef)
+        setCurrentRoom(list[roomIdRef[currentRef]])
+        setRoomList(list)
     }
 
-    async function fetchRoom(userId) {
-        let {data: rooms, error} = await supabase
-            .from('rooms')
-            .select('*')
-            .eq('fk_user_id', userId)
-        setRooms(rooms)
-    }
-
-    async function fetchUuid() {
-        const {data, error} = await supabase.auth.getSession()
-        const id = data.session.user.id
-        console.log(id)
-        if (id) {
-            await fetchUser(id)
-            await fetchRoom(id)
-        }
-    }
 
     async function fetchRoomUsers() {
-        if (userId && roomId) {
-            let {data: users, error} = await supabase
-                .from('users')
-                .select('*')
-                .eq("fk_room_id", roomId)
-
+        if(currentRoom){
+            const uuidList = [];
+            var roommates = currentRoom.ROOM_MATES;//[ { uuu: iii } ]
+            for(let i in roommates){
+                const uuid = roommates[i].uuid;
+                console.log("roommates", uuid);
+                uuidList.push(uuid);
+            }
+            setRoomMates(uuidList);
         }
     }
+    React.useEffect(()=>{
+        fetchRoomUsers();
+    },[currentRoom])
 
     React.useEffect(() => {
-        if (currentRoom)
-            setRoomId(currentRoom.pk_room_id)
-    }, [currentRoom])
+        setCurrentRoom(roomList[roomIdVsRef[currentRef]])
+        console.log(roomList[roomIdVsRef[currentRef]])
+        
+    }, [currentRef])
     React.useEffect(() => {
-        fetchUuid().then(r => {
+        fetchUser().then(r => {
 
         })
     }, [])
@@ -79,10 +96,11 @@ export default function Home() {
     }, [rooms])
     return (
         <Paper className={classes.paper}>
-            <SelectRoom rooms={rooms} currentRoom={currentRoom} setCurrentRoom={setCurrentRoom}/>
-            <PrimaryAppBar room={currentRoom} user={user}/>
-            {rooms && <Summary room={currentRoom} user={user}/>}
-            {rooms && <BottomMenu room={currentRoom} user={user}/>}
+            <SelectRoom roomNameVsRef={roomNameVsRef} currentRef={currentRef} setCurrentRef={setCurrentRef} />
+            <PrimaryAppBar room={currentRoom} user={user} />
+            {rooms && <Summary room={currentRoom} user={user} />}
+            {rooms && <BottomMenu room={currentRoom} user={user} />}
+            <DiffUser roomMates={roomMates} room={currentRoom} user={user}/>
         </Paper>
     )
 }

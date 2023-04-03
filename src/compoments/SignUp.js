@@ -11,7 +11,7 @@ import {
     TextField,
     Typography
 } from "@material-ui/core";
-import supabase from "../supabase";
+import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
 
 function Copyright() {
     return (
@@ -80,27 +80,20 @@ export default function SignUp({history}) {
         event.preventDefault();
         const {email, password, name} = event.target.elements;
         try {
-            console.log(email.value + " " + password.value);
-            const { data, error } = await supabase.auth.signUp({
-                email: email.value,
-                password: password.value,
-            })
+            const auth = getAuth();
+            createUserWithEmailAndPassword(auth, email.value, password.value)
+                .then((userCredential) => {
+                    const user = userCredential.user;
 
-            console.log(data.user.id, error)
-            const time = new Date()
-            const uuid = data.user.id
-            const {errorSaving} = await supabase
-                .from('users')
-                .insert({
-                    pk_uuid: uuid,
-                    name: name.value,
-                    create_date: time,
-                    room_joined: false,
-                    email: email.value,
-                    level: 0
+                    history.push("/");
                 })
-            console.error(errorSaving)
-            history.push("/");
+                .catch((error) => {
+                    const errorCode = error.code;
+                    const errorMessage = error.message;
+                    // ..
+                });
+
+
 
         } catch (error) {
             alert(error);

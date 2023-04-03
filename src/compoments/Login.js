@@ -1,4 +1,5 @@
 import React, {useCallback, useContext, useState} from "react";
+import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 
 import {
     Backdrop,
@@ -13,7 +14,7 @@ import {
     Typography
 } from "@material-ui/core";
 import {AuthContext} from "./AuthProvider";
-import supabase from "../supabase";
+import firebase from '../FirebaseWork'
 import {Redirect} from "react-router-dom";
 
 
@@ -91,10 +92,17 @@ export default function Login({history}) {
             event.preventDefault();
             const {email, password} = event.target.elements;
             try {
-                const { user, session, error } = await supabase.auth.signInWithPassword({
-                    email: email.value,
-                    password: password.value,
-                })
+                const auth = getAuth();
+                signInWithEmailAndPassword(auth, email.value, password.value)
+                    .then((userCredential) => {
+                        // Signed in
+                        const user = userCredential.user;
+                        // ...
+                    })
+                    .catch((error) => {
+                        const errorCode = error.code;
+                        const errorMessage = error.message;
+                    });
                 history.push("/");
             } catch (error) {
                 alert(error);

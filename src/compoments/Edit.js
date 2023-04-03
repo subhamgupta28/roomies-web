@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, { useEffect } from 'react';
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
@@ -6,9 +6,7 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Paper from '@material-ui/core/Paper';
 import Draggable from 'react-draggable';
-import {makeStyles, TextField} from "@material-ui/core";
-
-
+import { makeStyles, TextField } from "@material-ui/core";
 
 function PaperComponent(props) {
     return (
@@ -17,7 +15,6 @@ function PaperComponent(props) {
         </Draggable>
     );
 }
-
 const useStyles = makeStyles((theme) => ({
     root: {
         '& .MuiTextField-root': {
@@ -26,13 +23,11 @@ const useStyles = makeStyles((theme) => ({
         },
     },
 }));
-export default function AddItem({room, user, open, setOpen}) {
+function Edit({room, user, open, setOpen}) {
     const classes = useStyles();
-
     const [amount, setAmount] = React.useState(null)
     const [itemName, setItemName] = React.useState(null)
     const [notes, setNotes] = React.useState(null)
-
     const handleClose = () => {
         setOpen(false);
     };
@@ -40,29 +35,9 @@ export default function AddItem({room, user, open, setOpen}) {
 
         console.log("saved",user)
     }
-
     const handleSave = () => {
-        if (amount && itemName) {
-            const date = new Date()
-            const dateStr = date.getFullYear()+"-"+date.getMonth()+"-"+date.getDay()
-            const data = {
-                pk_detail_id: date.getTime(),
-                bought_by: user.name,
-                amount_paid: amount,
-                date: dateStr,
-                deleted: false,
-                item_bought: itemName,
-                timestamp: date.getTime(),
-                fk_room_id: room.pk_room_id,
-                fk_uuid: user.pk_uuid
-            }
-            console.log(data)
-            saveDetail(data).then(() => {
-
-            })
-        }
+        
     }
-
     return (
         <div>
             <Dialog
@@ -71,27 +46,27 @@ export default function AddItem({room, user, open, setOpen}) {
                 PaperComponent={PaperComponent}
                 aria-labelledby="draggable-dialog-title"
             >
-                <DialogTitle style={{cursor: 'move'}} id="draggable-dialog-title">
-                    Add Item
+                <DialogTitle style={{ cursor: 'move' }} id="draggable-dialog-title">
+                    Edit Item
                 </DialogTitle>
                 <DialogContent>
                     <form className={classes.root}>
                         <TextField
                             required
-                            onChange={(d)=>setItemName(d.target.value)}
+                            onChange={(d) => setItemName(d.target.value)}
                             id="outlined-required"
                             label="Item Name"
                             variant="outlined"
                         />
                         <TextField
                             required
-                            onChange={(d)=>setAmount(d.target.value)}
+                            onChange={(d) => setAmount(d.target.value)}
                             id="outlined-disabled"
                             label="Amount Paid"
                             variant="outlined"
                         />
                         <TextField
-                            onChange={(d)=>setNotes(d.target.value)}
+                            onChange={(d) => setNotes(d.target.value)}
                             id="outlined-password-input"
                             label="Note"
                             variant="outlined"
@@ -109,5 +84,6 @@ export default function AddItem({room, user, open, setOpen}) {
                 </DialogActions>
             </Dialog>
         </div>
-    );
+    )
 }
+export default Edit;

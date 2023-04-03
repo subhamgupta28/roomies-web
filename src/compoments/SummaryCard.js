@@ -23,15 +23,13 @@ const cardstyle = makeStyles({
 });
 export default function SummaryCard({detail}) {
     const {
-        pk_detail_id,
-        bought_by,
-        amount_paid,
-        date,
-        deleted,
-        item_bought,
-        time_stamp,
-        fk_room_id,
-        fk_uuid
+        BOUGHT_BY,
+        AMOUNT_PAID,
+        DATE,
+        TIME,
+        ITEM_BOUGHT,
+        TIME_STAMP,
+        UUID
     } = detail
     const classes = cardstyle();
 
@@ -39,16 +37,16 @@ export default function SummaryCard({detail}) {
         <Card className={classes.root} elevation={20}>
             <CardContent>
                 <Typography className={classes.title} color={"primary"} gutterBottom>
-                    {bought_by}
+                    {BOUGHT_BY}
                 </Typography>
                 <Typography variant="h5" component="h2" color={"secondary"}>
-                    ₹{amount_paid}
+                    ₹{AMOUNT_PAID}
                 </Typography>
                 <Typography className={classes.pos} color="textSecondary">
-                    {item_bought}
+                    {ITEM_BOUGHT}
                 </Typography>
                 <Typography variant="body2" component="h6">
-                    {date}
+                    {DATE}
                 </Typography>
             </CardContent>
             <CardActions>

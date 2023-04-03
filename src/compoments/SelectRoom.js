@@ -23,16 +23,23 @@ const chipStyle = makeStyles((theme) => ({
     },
 }));
 
-export default function SelectRoom({rooms, currentRoom, setCurrentRoom}) {
+export default function SelectRoom({roomNameVsRef, currentRef, setCurrentRef}) {
     const [open, setOpen] = React.useState(false)
+    const [roomNames, setRoomNames] = React.useState([])
     const classes = chipStyle();
     useEffect(() => {
-        if (rooms.length > 1)
+        console.log(roomNameVsRef)
+        setRoomNames(Object.keys(roomNameVsRef))
+        if (roomNameVsRef)
             setOpen(true)
-    }, [rooms])
+    }, [roomNameVsRef])
     const handleClose = () => {
         setOpen(false);
     };
+    const handleRoomSelect = (name) => {
+        setCurrentRef(roomNameVsRef[name])
+        setOpen(false)
+    }
 
     return (
         <div>
@@ -47,15 +54,15 @@ export default function SelectRoom({rooms, currentRoom, setCurrentRoom}) {
                 </DialogTitle>
                 <DialogContent>
                     <div className={classes.item}>
-                    {rooms ? rooms.map((room) =>
+                    {roomNames?roomNames.map(name =>
                         <Chip
                             clickable
                             onClick={() => {
-                                setCurrentRoom(room)
-                                setOpen(false)
+                                handleRoomSelect(name)
+
                             }}
                             color={"primary"}
-                            label={room.room_name}
+                            label={name}
                         />) : (
                         <Skeleton variant="rectangular" animation="wave"/>
                     )}

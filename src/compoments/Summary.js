@@ -1,8 +1,9 @@
 import {makeStyles} from "@material-ui/core/styles";
 import React, {useEffect, useState} from "react";
-import supabase from "../supabase";
 import {Skeleton} from "@material-ui/lab";
 import SummaryCard from "./SummaryCard";
+import { collection, query, where, getDocs, onSnapshot } from "firebase/firestore";
+import {db} from "../FirebaseWork";
 
 const chipStyle = makeStyles((theme) => ({
     root: {
@@ -54,41 +55,40 @@ const chipStyle = makeStyles((theme) => ({
 }));
 
 export default function Summary({user, room}) {
-    const [detailsList, setDetailsList] = useState([]);
     const [state, setState] = useState([])
     const classes = chipStyle();
-    supabase
-        .channel('any')
-        .on('postgres_changes', {event: '*', schema: 'public', table: 'details'}, payload => {
-            setState(payload)
-        })
-        .subscribe()
+    const [details, setDetails] = React.useState([]);
+
     useEffect(() => {
+
         const fetchData = async () => {
             if (room) {
                 const todayDate = new Date()
                 todayDate.setMinutes(0)
                 todayDate.setHours(0)
                 todayDate.setSeconds(0)
-                let {data: details, error} = await supabase
-                    .from('details')
-                    .select("*")
-                    .eq('fk_room_id', room.pk_room_id)
-                    .eq('deleted', false)
-                    // .gt('timestamp', todayDate.getTime())
-                details = details.sort((a,b)=>b.timestamp-a.timestamp)
-                setDetailsList(details)
+                const querySnapshot = query(collection(db, room.ROOM_ID),  where("TIME_STAMP", "<=", todayDate.getTime()));
+                const unsubscribe = onSnapshot(querySnapshot, (querySnapshot) => {
+                    const data = [];
+                    querySnapshot.forEach((doc) => {
+                        data.push(doc.data());
+                    });
+                    setDetails(data)
+                    console.log(data)
+                });
+
+
             }
         }
         fetchData().then(() => {
 
         });
-    }, [room, state]);
+    }, [room]);
 
 
     return (
         <div className={classes.item}>
-            {detailsList ? detailsList.map((detail) =>
+            {details ? details.map((detail) =>
                 <SummaryCard detail={detail}/>
             ) : (
                 <Skeleton variant="rectangular" animation="wave"/>

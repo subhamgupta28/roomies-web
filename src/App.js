@@ -1,4 +1,3 @@
-
 import theme from "./theme";
 import Home from "./compoments/Home";
 import React, { useState } from "react";
