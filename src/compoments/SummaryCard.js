@@ -21,6 +21,10 @@ const cardstyle = makeStyles({
     pos: {
         marginBottom: 12,
     },
+    action:{
+        display: "flex",
+        justifyContent: "center"
+    }
 });
 export default function SummaryCard({ detail }) {
     const {
@@ -44,20 +48,20 @@ export default function SummaryCard({ detail }) {
         <div className={classes.root}>
             <Card  elevation={20}>
                 <CardContent>
-                    <Typography className={classes.title} color={"primary"} gutterBottom>
+                    <Typography className={classes.title} color={"primary"}>
                         {BOUGHT_BY}
                     </Typography>
-                    <Typography variant="h5" component="h2" color={"secondary"}>
+                    <Typography variant="body1" color={"secondary"}>
                         ₹{AMOUNT_PAID}
                     </Typography>
-                    <Typography className={classes.pos} color="textSecondary">
+                    <Typography className={classes.pos} variant="body1" color="textSecondary">
                         {ITEM_BOUGHT}
                     </Typography>
-                    <Typography variant="body2" component="h6">
+                    <Typography variant="p">
                         {DATE}
                     </Typography>
                 </CardContent>
-                <CardActions>
+                <CardActions className={classes.action}>
                     <Button
                         variant={"contained"}
                         onClick={handleEdit}

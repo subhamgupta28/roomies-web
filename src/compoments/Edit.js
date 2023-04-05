@@ -4,23 +4,26 @@ import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
-import Paper from '@material-ui/core/Paper';
-import Draggable from 'react-draggable';
-import { makeStyles, TextField } from "@material-ui/core";
+import { makeStyles, TextField,Slide } from "@material-ui/core";
 
-function PaperComponent(props) {
-    return (
-        <Draggable handle="#draggable-dialog-title" cancel={'[class*="MuiDialogContent-root"]'}>
-            <Paper {...props} />
-        </Draggable>
-    );
-}
+const Transition = React.forwardRef(function Transition(props, ref) {
+    return <Slide direction="up" ref={ref} {...props} />;
+});
 const useStyles = makeStyles((theme) => ({
     root: {
         '& .MuiTextField-root': {
             margin: theme.spacing(1),
             width: '25ch',
         },
+        display: "grid"
+    },
+    parent: {
+        borderRadius:16,
+        backgroundColor: 'rgba(255, 255, 255, 0.01)',
+        backdropFilter: 'blur(7px)',
+    },
+    ro:{
+
     },
 }));
 function Edit({ detail, open, setOpen }) {
@@ -53,8 +56,8 @@ function Edit({ detail, open, setOpen }) {
             <Dialog
                 open={open}
                 onClose={handleClose}
-                PaperComponent={PaperComponent}
-                aria-labelledby="draggable-dialog-title"
+                TransitionComponent={Transition}
+                className={{paper: classes.parent, root:classes.ro}}
             >
                 <DialogTitle style={{ cursor: 'move' }} id="draggable-dialog-title">
                     Edit Item

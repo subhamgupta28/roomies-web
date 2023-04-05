@@ -1,7 +1,8 @@
 import {Button, makeStyles, Typography} from "@material-ui/core";
 import React, {useEffect, useState} from "react";
 import AddItem from "./AddItem";
-import RoomCreation from "./RoomCreation";
+import { collection, query, where, getDocs, onSnapshot } from "firebase/firestore";
+import {db} from "../FirebaseWork";
 
 const style = makeStyles((theme) => ({
     root: {
@@ -15,16 +16,18 @@ export default function BottomMenu({room, user}){
     const [open, setOpen] = React.useState(false)
     const [total, setTotal] = useState(0);
     useEffect(() => {
+
         const fetchData = async () => {
             if (room) {
-                // let {data: details, error} = await supabase
-                //     .from('details')
-                //     .select("*")
-                //     .eq('fk_room_id', room.pk_room_id)
-                //     .eq('deleted', false)
-                // const amount  = details.map((detail)=> detail.amount_paid).reduce((prev, next)=> prev+next,  0)
-                // console.log("amount",amount)
-                // setTotal(amount)
+                const querySnapshot = query(collection(db, room.ROOM_ID));
+                onSnapshot(querySnapshot, (querySnapshot) => {
+                    const data = [];
+                    querySnapshot.forEach((doc) => {
+                        data.push(doc.data());
+                    });
+                    setTotal(data.length)
+                    console.log(data)
+                });
             }
         }
         fetchData().then(() => {
@@ -40,7 +43,6 @@ export default function BottomMenu({room, user}){
             <Typography variant="body2">
                 Total Spending {total}
             </Typography>
-            <RoomCreation room={room} user={user}/>
         </div>
     )
 

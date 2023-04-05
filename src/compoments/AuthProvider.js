@@ -12,16 +12,16 @@ const useStyles = makeStyles((theme) => ({
 
 export const AuthProvider = ({ children }) => {
     const [currentUser, setCurrentUser] = useState(null);
-    const [pending, setPending] = useState(false);
+    const [pending, setPending] = useState(true);
     const classes = useStyles();
 
     useEffect(() => {
         const auth = getAuth();
         onAuthStateChanged(auth, (user) => {
-            if (user) {
+           
                 setCurrentUser(user)
                 setPending(false)
-            }
+            
         });
     }, []);
 

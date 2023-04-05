@@ -1,36 +1,101 @@
 import React from 'react';
-import Button from '@material-ui/core/Button';
-import Dialog from '@material-ui/core/Dialog';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogTitle from '@material-ui/core/DialogTitle';
-import Paper from '@material-ui/core/Paper';
-import Draggable from 'react-draggable';
-import {makeStyles, TextField} from "@material-ui/core";
-
-
-function PaperComponent(props) {
-    return (
-        <Draggable handle="#draggable-dialog-title" cancel={'[class*="MuiDialogContent-root"]'}>
-            <Paper {...props} />
-        </Draggable>
-    );
-}
+import {
+    Backdrop,
+    Box,
+    Button,
+    CircularProgress,
+    Container,
+    CssBaseline,
+    Grid,
+    Link, makeStyles,
+    TextField,
+    Typography
+} from "@material-ui/core";
+import { Redirect } from "react-router-dom";
+import { AuthContext } from "./AuthProvider";
+import { getDatabase, ref, onValue, get } from "firebase/database";
+import { getAuth } from "firebase/auth";
 
 const useStyles = makeStyles((theme) => ({
-    root: {
-        '& .MuiTextField-root': {
-            margin: theme.spacing(1),
-            width: '25ch',
-        },
+    app: {
+        width: "100%",
+        height: "100vh",
+        flexDirection: 'column',
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        backgroundAttachment: "fixed",
+    },
+    paper: {
+        paddingTop: theme.spacing(2),
+        padding: theme.spacing(4),
+        display: "flex",
+        flexDirection: "column",
+        alignItems: 'center',
+        backgroundColor: 'rgba(180, 180, 255, 0.01)',
+        backdropFilter: 'blur(7px)',
+        boxShadow:
+            "0px 0px 30px 1px rgba(70,70,70,0.8)",
+        borderRadius: 20,
+        // borderLeft: 'solid 1px rgba(255, 255, 255, 0.3)',
+        // borderTop: 'solid 1px rgba(255, 255, 255, 0.3)',
+    },
+    avatar: {
+        margin: theme.spacing(1),
+
+    },
+    form: {
+        width: '100%', // Fix IE 11 issue.
+        marginTop: theme.spacing(1),
+    },
+    submit: {
+        margin: theme.spacing(3, 0, 2),
+    },
+    item: {
+        borderRadius: 10,
+        margin: 10,
+    },
+    backdrop: {
+        zIndex: theme.zIndex.drawer + 1,
+        color: '#fff',
+    },
+    container: {
+        paddingTop: 100,
+        padding: theme.spacing(6),
     },
 }));
-export default function RoomCreation({room, user}) {
+export default function RoomCreation() {
     const classes = useStyles();
+    const [user, setUser] = React.useState({})
     const [open, setOpen] = React.useState(false)
     const [roomName, setRoomName] = React.useState(null)
     const [limit, setLimit] = React.useState(null)
     const [roomId, setRoomId] = React.useState(null)
+    const [hide, setHide] = React.useState(false);
+    const [newRef, setNewRef] = React.useState(null);
+    const auth = getAuth();
+    const uuid = auth.currentUser.uid
+    const db = getDatabase();
 
+    async function fetchUser() {
+        const userRef = ref(db, 'ROOMIES/' + uuid);
+        onValue(userRef, (snapshot) => {
+            const data = snapshot.val();
+            console.log("user", data);
+            setUser(perv => data)
+            let count = []
+            for (const key in data) {
+                if (key.includes("ROOM_ID")) {
+                    count.push(key.slice(-1));
+                }
+            }
+            const max = Math.max(...count)
+            setNewRef("ROOM_ID"+max)
+            console.log("count",newRef)
+        });
+    }
+    React.useEffect(()=>{
+        fetchUser();
+    },[])
     const handleClose = () => {
         setOpen(false);
     };
@@ -40,7 +105,7 @@ export default function RoomCreation({room, user}) {
         //     .insert([
         //         item
         //     ])
-        console.log("saved", user)
+        console.log("saved", item)
     }
 
     const handleCreateNewRoom = () => {
@@ -64,7 +129,7 @@ export default function RoomCreation({room, user}) {
         }
     }
     const handleJoinRoom = () => {
-        if (roomId){
+        if (roomId) {
             const date = new Date()
             const dateStr = date.getFullYear() + "-" + date.getMonth() + "-" + date.getDay()
             const data = {
@@ -86,54 +151,82 @@ export default function RoomCreation({room, user}) {
     }
 
     return (
-        <div>
-            <Button color="primary" onClick={()=>setOpen(true)}>
-                Add Room
-            </Button>
-            <Dialog
-                open={open}
-                onClose={handleClose}
-                PaperComponent={PaperComponent}
-                aria-labelledby="draggable-dialog-title"
-            >
-                <DialogTitle style={{cursor: 'move'}} id="draggable-dialog-title">
-                    Join or Create new room
-                </DialogTitle>
-                <DialogContent>
-                    Create new Room
-                    <form className={classes.root}>
+        <div className={classes.app}>
+            <CssBaseline />
+            <Container maxWidth="sm" className={classes.container}>
+                <div className={classes.paper}>
+                    <Typography component="h1" align={"center"} variant="h5">
+                        Join existing room
+                    </Typography>
+                    <div className={classes.form}>
                         <TextField
+                            variant="outlined"
+                            margin="normal"
                             required
-                            onChange={(d) => setRoomName(d.target.value)}
-                            id="outlined-required"
-                            label="Choose Room Name"
-                            variant="outlined"
+                            onChange={(v)=>setRoomId(v.target.value)}
+                            fullWidth
+                            id="roomId"
+                            label="Room Id"
+                            name="roomId"
+                            autoComplete="roomId"
+                            autoFocus
                         />
+
+                        <Button
+                            type="submit"
+                            fullWidth
+                            variant="contained"
+                            color="primary"
+                            onClick={handleJoinRoom}
+                            className={classes.submit}
+                        >
+                            Enter Room
+                        </Button>
+                        <Typography component="h1" align={"center"} variant="h5">
+                            Create room
+                        </Typography>
                         <TextField
+                            variant="outlined"
+                            margin="normal"
                             required
-                            onChange={(d) => setLimit(d.target.value)}
-                            id="outlined-disabled"
-                            label="Limit Person"
-                            variant="outlined"
+                            fullWidth
+                            onChange={(v)=>setRoomName(v.target.value)}
+                            name="roomName"
+                            label="Choose room name"
+                            type="roomName"
+                            id="roomName"
                         />
-                        <Button color="primary" onClick={handleCreateNewRoom}>
-                            Create
-                        </Button>
-                    </form>
-                    Join existing room
-                    <form className={classes.root}>
                         <TextField
-                            onChange={(d) => setRoomId(d.target.value)}
-                            id="outlined-password-input"
-                            label="Enter Room Id"
                             variant="outlined"
+                            margin="normal"
+                            required
+                            fullWidth
+                            name="limit"
+                            onChange={(v)=>setLimit(v.target.value)}
+                            label="Limit"
+                            defaultValue={5}
+                            type="limit"
+                            id="limit"
                         />
-                        <Button autoFocus onClick={handleJoinRoom} color="primary">
-                            Enter
+                        <Button
+                            type="submit"
+                            fullWidth
+                            onClick={handleCreateNewRoom}
+                            variant="contained"
+                            color="primary"
+                            className={classes.submit}
+                        >
+                            Create room
                         </Button>
-                    </form>
-                </DialogContent>
-            </Dialog>
+                    </div>
+                </div>
+
+                <Backdrop className={classes.backdrop} open={hide}>
+                    <CircularProgress color="secondary" />
+                </Backdrop>
+
+
+            </Container>
         </div>
     );
 }
