@@ -37,10 +37,9 @@ function DiffUser({room, roomMates, user}){
     }, [roomMates])
     
 
-
     return(
         <div>
-            {roomMates}
+            {/* {roomMates} */}
         </div>
     )
 }

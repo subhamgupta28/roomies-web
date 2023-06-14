@@ -11,10 +11,10 @@ const chipStyle = makeStyles((theme) => ({
         borderRadius: 16,
         maxWidth: '95%',
         height: '100%',
-        backgroundColor: 'rgba(255, 255, 255, 0.01)',
-        backdropFilter: 'blur(7px)',
-        boxShadow:
-            "0px 0px 30px 1px rgba(70,70,70,0.8)",
+        // backgroundColor: 'rgba(255, 255, 255, 0.01)',
+        // backdropFilter: 'blur(7px)',
+        // boxShadow:
+        //     "0px 0px 30px 1px rgba(70,70,70,0.8)",
         alignItems: "center",
         justifyContent: 'center',
     },

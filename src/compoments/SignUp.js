@@ -85,7 +85,7 @@ export default function SignUp({history}) {
                 .then((userCredential) => {
                     const user = userCredential.user;
 
-                    history.push("/");
+                    history.push("/login");
                 })
                 .catch((error) => {
                     const errorCode = error.code;

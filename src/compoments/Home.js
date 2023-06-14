@@ -13,9 +13,10 @@ import ParticlesBg from "particles-bg";
 
 const paperStyle = makeStyles((theme) => ({
     paper: {
-        backgroundColor: 'rgba(255, 255, 255, 0.01)',
-        backdropFilter: 'blur(1px)',
         borderRadius: 0,
+        height: "fit-content",
+        width: "100vw",
+        minHeight: "100vh"
     }
 }));
 export default function Home() {

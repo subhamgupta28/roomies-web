@@ -8,7 +8,7 @@ const cardstyle = makeStyles({
         display: 'inline-block',
         width: "auto",
         margin: 10,
-        borderRadius: 16
+        borderRadius: 50
     },
     bullet: {
         display: 'inline-block',
@@ -46,7 +46,7 @@ export default function SummaryCard({ detail }) {
 
     return (
         <div className={classes.root}>
-            <Card  elevation={20}>
+            <Card  elevation={2}>
                 <CardContent>
                     <Typography className={classes.title} color={"primary"}>
                         {BOUGHT_BY}
