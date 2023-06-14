@@ -1,18 +1,22 @@
-import supabase from "../supabase";
 import React from "react";
-import {makeStyles, Paper} from "@material-ui/core";
+import { makeStyles, Paper } from "@material-ui/core";
 import PrimaryAppBar from "./AppBar";
 import Summary from "./Summary";
+import "../App.css"
 import SelectRoom from "./SelectRoom";
-import AddItem from "./AddItem";
 import BottomMenu from "./BottomMenu";
-
+import RoomCreation from "./RoomCreation";
+import DiffUser from "./DiffUser";
+import { getDatabase, ref, onValue, get } from "firebase/database";
+import { getAuth } from "firebase/auth";
+import ParticlesBg from "particles-bg";
 
 const paperStyle = makeStyles((theme) => ({
     paper: {
-        backgroundColor: 'rgba(0, 0, 255, 0.01)',
-        height: "100%",
-        width: "100%"
+        borderRadius: 0,
+        height: "fit-content",
+        width: "100vw",
+        minHeight: "100vh"
     }
 }));
 export default function Home() {
@@ -20,38 +24,71 @@ export default function Home() {
     const [user, setUser] = React.useState({})
     const [rooms, setRooms] = React.useState([])
     const [currentRoom, setCurrentRoom] = React.useState(null)
+    const [userId, setUserId] = React.useState(null)
+    const [roomList, setRoomList] = React.useState([])
+    const [roomIdVsRef, setRoomIdVsRef] = React.useState([])
+    const [roomNameVsRef, setRoomNameVsRef] = React.useState([])
+    const [currentRef, setCurrentRef] = React.useState("")
+    const [roomMates, setRoomMates] = React.useState([]);
 
+    const auth = getAuth();
+    const uuid = auth.currentUser.uid
+    const db = getDatabase();
 
-    React.useEffect(() => {
-        const fetchUuid = async () => {
-            const {data, error} = await supabase.auth.getSession()
-            const id = data.session.user.id
-            console.log(id)
-            if (id) {
-                await fetchUser(id)
-                await fetchRoom(id)
+    async function fetchUser() {
+        const userRef = ref(db, 'ROOMIES/' + uuid);
+        onValue(userRef, (snapshot) => {
+            const data = snapshot.val();
+            console.log("user", data);
+            setUser(perv => data)
+            fetchRoom(data)
+        });
+    }
+
+    async function fetchRoom(user) {
+        let list = {};
+        let roomIdRef = {};
+        let roomNameRef = {};
+        for (const key in user) {
+            if (key.includes("ROOM_ID")) {
+                roomIdRef = { ...roomIdRef, [key]: user[key] }
+                await get(ref(db, "ROOMIES/ROOM/" + user[key])).then((snapshot) => {
+                    const room = snapshot.val()
+                    list = { ...list, [user[key]]: room }
+                    roomNameRef = { ...roomNameRef, [room.ROOM_NAME]: key }
+                })
             }
         }
+        setRoomIdVsRef(roomIdRef)
+        setRoomNameVsRef(roomNameRef)
+        setCurrentRoom(list[roomIdRef[currentRef]])
+        setRoomList(list)
+    }
 
-        async function fetchUser(uuid) {
-            let {data: users, error} = await supabase
-                .from('users')
-                .select('*')
-                .eq("pk_uuid", uuid)
-            console.log("user", users[0])
-            setUser(prev => prev = users[0])
+
+    async function fetchRoomUsers() {
+        if (currentRoom) {
+            const uuidList = [];
+            var roommates = currentRoom.ROOM_MATES;//[ { uuu: iii } ]
+            for (let i in roommates) {
+                const uuid = roommates[i].uuid;
+                console.log("roommates", uuid);
+                uuidList.push(uuid);
+            }
+            setRoomMates(uuidList);
         }
+    }
+    React.useEffect(() => {
+        fetchRoomUsers();
+    }, [currentRoom])
 
-        async function fetchRoom(userId) {
-            let {data: rooms, error} = await supabase
-                .from('rooms')
-                .select('*')
-                .eq('fk_user_id', userId)
+    React.useEffect(() => {
+        setCurrentRoom(roomList[roomIdVsRef[currentRef]])
+        console.log(roomList[roomIdVsRef[currentRef]])
 
-            setRooms(rooms)
-        }
-
-        fetchUuid().then(r => {
+    }, [currentRef])
+    React.useEffect(() => {
+        fetchUser().then(r => {
 
         })
     }, [])
@@ -62,11 +99,14 @@ export default function Home() {
     }, [rooms])
     return (
         <Paper className={classes.paper}>
-            <SelectRoom rooms={rooms}/>
-            <PrimaryAppBar room={currentRoom} user={user}/>
-            {rooms && <Summary room={currentRoom} user={user}/>}
-            {rooms && <BottomMenu room={currentRoom} user={user}/>}
-
+            <div className="App">
+                <SelectRoom roomNameVsRef={roomNameVsRef} currentRef={currentRef} setCurrentRef={setCurrentRef} />
+                <PrimaryAppBar room={currentRoom} user={user} />
+                {rooms && <Summary room={currentRoom} user={user} />}
+                {rooms && <BottomMenu room={currentRoom} user={user} />}
+                <DiffUser roomMates={roomMates} room={currentRoom} user={user} />
+            </div>
+            {/* <ParticlesBg  type="cobweb" color="#FF2626" bg={true} /> */}
         </Paper>
     )
 }

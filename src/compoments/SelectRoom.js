@@ -1,13 +1,12 @@
 import React, {useEffect} from 'react';
-import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Paper from '@material-ui/core/Paper';
 import Draggable from 'react-draggable';
-import {TextField} from "@material-ui/core";
+import {Chip} from "@material-ui/core";
+import {makeStyles} from "@material-ui/core/styles";
+import {Skeleton} from "@material-ui/lab";
 
 
 function PaperComponent(props) {
@@ -17,17 +16,30 @@ function PaperComponent(props) {
         </Draggable>
     );
 }
+const chipStyle = makeStyles((theme) => ({
+    item: {
+        margin: 6,
+        flexWrap: 'wrap',
+    },
+}));
 
-export default function SelectRoom(rooms) {
+export default function SelectRoom({roomNameVsRef, currentRef, setCurrentRef}) {
     const [open, setOpen] = React.useState(false)
-
+    const [roomNames, setRoomNames] = React.useState([])
+    const classes = chipStyle();
     useEffect(() => {
-        if (rooms.length>1)
+        console.log(roomNameVsRef)
+        setRoomNames(Object.keys(roomNameVsRef))
+        if (roomNameVsRef)
             setOpen(true)
-    }, [rooms])
+    }, [roomNameVsRef])
     const handleClose = () => {
         setOpen(false);
     };
+    const handleRoomSelect = (name) => {
+        setCurrentRef(roomNameVsRef[name])
+        setOpen(false)
+    }
 
     return (
         <div>
@@ -38,18 +50,24 @@ export default function SelectRoom(rooms) {
                 aria-labelledby="draggable-dialog-title"
             >
                 <DialogTitle style={{cursor: 'move'}} id="draggable-dialog-title">
-                    Add Item
+                    Select Room
                 </DialogTitle>
                 <DialogContent>
+                    <div className={classes.item}>
+                    {roomNames?roomNames.map(name =>
+                        <Chip
+                            clickable
+                            onClick={() => {
+                                handleRoomSelect(name)
+
+                            }}
+                            color={"primary"}
+                            label={name}
+                        />) : (
+                        <Skeleton variant="rectangular" animation="wave"/>
+                    )}
+                    </div>
                 </DialogContent>
-                <DialogActions>
-                    <Button autoFocus onClick={handleClose} color="primary">
-                        Cancel
-                    </Button>
-                    <Button color="primary">
-                        Select
-                    </Button>
-                </DialogActions>
             </Dialog>
         </div>
     );

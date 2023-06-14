@@ -1,21 +1,16 @@
 import {makeStyles} from "@material-ui/core/styles";
 import {
-    AppBar, Box, Dialog,
+    AppBar, Dialog,
     IconButton, InputAdornment, Slide,
     TextField,
     Toolbar,
     Typography
 } from "@material-ui/core";
 import SearchIcon from "@material-ui/icons/Search";
-import {AccountCircle, AddAlert, Close, HistoryOutlined, Lock, PersonOutlined} from "@material-ui/icons";
+import {AccountCircle, AddAlert, Close, HistoryOutlined} from "@material-ui/icons";
 import React, {useEffect, useState} from "react";
 import { Autocomplete} from "@material-ui/lab";
-import Drawer from "@material-ui/core/Drawer";
-import List from "@material-ui/core/List";
-import ListItem from "@material-ui/core/ListItem";
-import ListItemIcon from "@material-ui/core/ListItemIcon";
-import ListItemText from "@material-ui/core/ListItemText";
-import Button from "@material-ui/core/Button";
+
 
 
 const appbarstyle = makeStyles((theme) => ({

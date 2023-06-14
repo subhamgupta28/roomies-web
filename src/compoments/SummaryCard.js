@@ -1,13 +1,14 @@
-import {Button, Card, CardActions, CardContent, Typography} from "@material-ui/core";
+import { Button, Card, CardActions, CardContent, Typography } from "@material-ui/core";
 import React from "react";
-import {makeStyles} from "@material-ui/core/styles";
+import { makeStyles } from "@material-ui/core/styles";
+import Edit from "./Edit";
 
 const cardstyle = makeStyles({
     root: {
         display: 'inline-block',
         width: "auto",
         margin: 10,
-        borderRadius: 16
+        borderRadius: 50
     },
     bullet: {
         display: 'inline-block',
@@ -20,45 +21,60 @@ const cardstyle = makeStyles({
     pos: {
         marginBottom: 12,
     },
+    action:{
+        display: "flex",
+        justifyContent: "center"
+    }
 });
-export default function SummaryCard({detail}) {
+export default function SummaryCard({ detail }) {
     const {
-        pk_detail_id,
-        bought_by,
-        amount_paid,
-        date,
-        deleted,
-        item_bought,
-        time_stamp,
-        fk_room_id,
-        fk_uuid
+        BOUGHT_BY,
+        AMOUNT_PAID,
+        DATE,
+        TIME,
+        ITEM_BOUGHT,
+        TIME_STAMP,
+        UUID
     } = detail
     const classes = cardstyle();
 
+    const [openEdit, setOpenEdit] = React.useState(false);
+
+    const handleEdit = () => {
+        setOpenEdit(true)
+    }
+
     return (
-        <Card className={classes.root} elevation={20}>
-            <CardContent>
-                <Typography className={classes.title} color={"primary"} gutterBottom>
-                    {bought_by}
-                </Typography>
-                <Typography variant="h5" component="h2" color={"secondary"}>
-                    {amount_paid}
-                </Typography>
-                <Typography className={classes.pos} color="textSecondary">
-                    {item_bought}
-                </Typography>
-                <Typography variant="body2" component="h6">
-                    {date}
-                </Typography>
-            </CardContent>
-            <CardActions>
-                <Button variant={"contained"} size="small">
-                    Edit
-                </Button>
-                <Button variant={"contained"} size="small">
-                    Delete
-                </Button>
-            </CardActions>
-        </Card>
+        <div className={classes.root}>
+            <Card  elevation={2}>
+                <CardContent>
+                    <Typography className={classes.title} color={"primary"}>
+                        {BOUGHT_BY}
+                    </Typography>
+                    <Typography variant="body1" color={"secondary"}>
+                        ₹{AMOUNT_PAID}
+                    </Typography>
+                    <Typography className={classes.pos} variant="body1" color="textSecondary">
+                        {ITEM_BOUGHT}
+                    </Typography>
+                    <Typography variant="p">
+                        {DATE}
+                    </Typography>
+                </CardContent>
+                <CardActions className={classes.action}>
+                    <Button
+                        variant={"contained"}
+                        onClick={handleEdit}
+                        size="small">
+                        Edit
+                    </Button>
+                    <Button variant={"contained"} size="small">
+                        Delete
+                    </Button>
+                </CardActions>
+            </Card>
+            <Edit open={openEdit} setOpen={setOpenEdit} detail={detail}/>
+        </div>
+
     );
 }

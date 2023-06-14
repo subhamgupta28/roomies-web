@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
-import supabase from "../supabase";
 import {Backdrop, CircularProgress, makeStyles} from "@material-ui/core";
-
+import { getAuth, onAuthStateChanged } from "firebase/auth";
 
 export const AuthContext = React.createContext();
 const useStyles = makeStyles((theme) => ({
@@ -13,21 +12,18 @@ const useStyles = makeStyles((theme) => ({
 
 export const AuthProvider = ({ children }) => {
     const [currentUser, setCurrentUser] = useState(null);
-    const [pending, setPending] = useState(false);
+    const [pending, setPending] = useState(true);
     const classes = useStyles();
 
     useEffect(() => {
-        supabase.auth.onAuthStateChange((event, session) => {
-            if (event === 'SIGNED_IN') {
-                console.log("render", session)
-                setCurrentUser(session.user)
+        const auth = getAuth();
+        onAuthStateChanged(auth, (user) => {
+           
+                setCurrentUser(user)
                 setPending(false)
-            }
-            if (event === 'SIGNED_OUT') {
-                setCurrentUser(null)
-            }
-        })
-    }, [])
+            
+        });
+    }, []);
 
     if (pending) {
         return (

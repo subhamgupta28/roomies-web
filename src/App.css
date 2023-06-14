@@ -2,14 +2,11 @@
   margin: 0;
   padding: 0;
 }
-
 .App {
   text-align: center;
-}
-
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+  background-color: #202020 !important;
+  width: auto;
+  height: auto;
 }
 
 .App-header {

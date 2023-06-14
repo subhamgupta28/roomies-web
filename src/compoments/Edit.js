@@ -4,11 +4,7 @@ import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
-import { makeStyles, TextField, Slide } from "@material-ui/core";
-import { doc, setDoc } from "firebase/firestore";
-import { db } from "../FirebaseWork";
-import { getAuth } from "firebase/auth";
-
+import { makeStyles, TextField,Slide } from "@material-ui/core";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;
@@ -30,66 +26,47 @@ const useStyles = makeStyles((theme) => ({
 
     },
 }));
-export default function AddItem({ room, user, open, setOpen }) {
+function Edit({ detail, open, setOpen }) {
     const classes = useStyles();
-
-    const [amount, setAmount] = React.useState(0)
-    const [itemName, setItemName] = React.useState("")
-    const [notes, setNotes] = React.useState("")
-
+    const {
+        BOUGHT_BY,
+        AMOUNT_PAID,
+        DATE,
+        TIME,
+        ITEM_BOUGHT,
+        TIME_STAMP,
+        UUID,
+        NOTE
+    } = detail
+    const [amount, setAmount] = React.useState(AMOUNT_PAID)
+    const [itemName, setItemName] = React.useState(ITEM_BOUGHT)
+    const [notes, setNotes] = React.useState(NOTE)
     const handleClose = () => {
         setOpen(false);
     };
     const saveDetail = async (item) => {
 
-        console.log("saved", user)
+        console.log("saved")
     }
-    const auth = getAuth();
-    const uuid = auth.currentUser.uid
+    const handleSave = () => {
 
-    const handleSave = async () => {
-        if (amount && itemName) {
-            const date = new Date()
-            const dateStr = date.getFullYear() + "-" + date.getMonth() + "-" + date.getDay()
-
-
-            const data = {
-                CATEGORY: "All",
-                BOUGHT_BY: user.USER_NAME,
-                AMOUNT_PAID: parseInt(amount),
-                DATE: dateStr,
-                DELETED: false,
-                ITEM_BOUGHT: itemName,
-                TIME_STAMP: date.getTime(),
-                NOTE: notes,
-                UUID: uuid,
-                TAGS: [],
-                TIME: String("")
-            }
-            await setDoc(doc(db, room.ROOM_ID, date.getTime().toString()), data);
-            console.log(data)
-            saveDetail(data).then(() => {
-
-            })
-        }
     }
-
     return (
         <div>
             <Dialog
-                className={{paper: classes.parent, root:classes.ro}}
                 open={open}
                 onClose={handleClose}
                 TransitionComponent={Transition}
-            
+                className={{paper: classes.parent, root:classes.ro}}
             >
-                <DialogTitle style={{ cursor: 'move' }}>
-                    Add Item
+                <DialogTitle style={{ cursor: 'move' }} id="draggable-dialog-title">
+                    Edit Item
                 </DialogTitle>
                 <DialogContent>
-                    <div className={classes.root}>
+                    <form className={classes.root}>
                         <TextField
                             required
+                            value={itemName}
                             onChange={(d) => setItemName(d.target.value)}
                             id="outlined-required"
                             label="Item Name"
@@ -97,19 +74,21 @@ export default function AddItem({ room, user, open, setOpen }) {
                         />
                         <TextField
                             required
+                            value={amount}
                             onChange={(d) => setAmount(d.target.value)}
                             id="outlined-disabled"
                             label="Amount Paid"
                             variant="outlined"
                         />
                         <TextField
+                            value={notes}
                             onChange={(d) => setNotes(d.target.value)}
                             id="outlined-password-input"
                             label="Note"
                             variant="outlined"
                         />
 
-                    </div>
+                    </form>
                 </DialogContent>
                 <DialogActions>
                     <Button autoFocus onClick={handleClose} color="primary">
@@ -121,5 +100,6 @@ export default function AddItem({ room, user, open, setOpen }) {
                 </DialogActions>
             </Dialog>
         </div>
-    );
+    )
 }
+export default Edit;
